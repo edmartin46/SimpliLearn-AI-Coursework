@@ -1,0 +1,144 @@
+################################################################## Example Question 1 ##############################################################################
+
+Question: What column types does monday.com support?
+Answer: monday.com supports many built‑in column types (plus custom/app columns). Common column types include:
+
+- Text (Short text)
+- Long text / Updates
+- Numbers (including Money)
+- Formula
+- Status
+- Dropdown / Labels
+- Tags
+- Date (and Date & Time)
+- Timeline
+- Duration / Time tracking
+- People (assignees)
+- Auto‑number
+- Checkbox
+- Files (attachments)
+- Link
+- Email
+- Phone
+- Location
+- Progress / Percent
+- Rating
+- Vote
+- Color
+- Dependency (predecessor/successor)
+- Connect Boards (board relation) and Mirror (mirrored columns)
+- Creation Log / Created By / Last Updated / Update Log (system columns)
+- Subitems (special hierarchical rows)
+
+There are also app‑provided or marketplace column types and additional "other types" used by the API (column capability objects, calculated capability objects, etc.). For the full, up‑to‑date list and API support/implementation details, see the monday.com columns documentation: https://developer.monday.com/api-reference/reference/columns-other-types
+
+--- Sources ---
+
+Source 1:
+Column Types
+Browse the full list of monday.com column types, their API support levels, and
+implementation types for reading and writing column values
+monday.com boards support a variety of column types, each designed to store specific kinds of data.
+The API lets you read, filter, create, update, and clear most column types, though some are read-only
+or unsupported.
+Each column type has a dedicated reference page (linked below) with examples for querying,
+
+Source 2:
+Other types
+Learn about other types supported by the columns APIs
+The monday.com columns APIs enable you to create, read, update, and delete columns.
+The types below are used by the columns queries and mutations, and are not independently
+queryable.
+An object containing the column's capability settings.
+An object containing a column's calculated capability settings.
+An object containing the input configuration for a column's capabilities.
+ColumnCapabilities
+Field Type Description
+
+Source 3:
+08/06/2026, 17:33 Other types
+https://developer.monday.com/api-reference/reference/columns-other-types 1/9
+
+Source 4:
+08/06/2026, 17:33 Other types
+https://developer.monday.com/api-reference/reference/columns-other-types 7/9
+
+
+################################################################## Example Question 2 ##############################################################################
+
+
+Question: How do I get a list of columns in a board using the monday.com API?
+Answer: Use the GraphQL API and request the board's columns field. Columns must be requested nested under boards (you cannot query columns at the root). The request requires the boards:read scope.
+
+Minimal GraphQL query
+query {
+  boards(ids: [123456789]) {
+    columns {
+      id
+      title
+      type
+      settings_str
+    }
+  }
+}
+
+Example curl
+curl -X POST https://api.monday.com/v2 \
+  -H "Authorization: YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"query { boards(ids: [123456789]) { columns { id title type settings_str } } }"}'
+
+What you get
+- The response contains an array of column metadata (id, title, type, etc.).
+- If you also need column values for items, request items -> column_values in the same query.
+
+Notes
+- Required scope: boards:read.
+- You can include other column fields (and column-specific fields) where supported.
+- There is an optional columns(...) argument to filter by capabilities if you want only certain types of columns.
+
+--- Sources ---
+
+Source 1:
+Columns
+Learn how to create, read, update, and delete columns on monday boards using the
+platform API
+monday.com boards are formatted as a table with columns and rows of items. Each column has
+specific functionality and only stores relevant data. For example, a numbers column stores numerical
+values, a text column stores text values, and a time tracking column stores only time-based data from
+log events.
+Required scope: boards:read
+
+Source 2:
+Column Types
+Browse the full list of monday.com column types, their API support levels, and
+implementation types for reading and writing column values
+monday.com boards support a variety of column types, each designed to store specific kinds of data.
+The API lets you read, filter, create, update, and clear most column types, though some are read-only
+or unsupported.
+Each column type has a dedicated reference page (linked below) with examples for querying,
+
+Source 3:
+08/06/2026, 17:15 Columns
+https://developer.monday.com/api-reference/reference/columns 3/15
+
+Source 4:
+log events.
+Required scope: boards:read
+Returns an array containing metadata about one or a collection of columns
+Can only be nested within another query (e.g., boards); can't be queried directly at the root
+GraphQL JavaScript
+Queries
+Get columns
+query {
+  boards(ids: [1234567890]) {
+    columns {
+      id
+      title
+    }
+  }
+}
+Arguments
+Argument Type Description Enum Values
+capabilities [ColumnCapability]A list of column capabilities to
+filter by. Returns columns that
